@@ -38,3 +38,6 @@
 1. **Vérifiez** le repository : https://github.com/CnG990/Kalel-Catalogue
 2. **Déployez** sur Vercel : https://vercel.com
 3. **Testez** le site en production
+
+
+

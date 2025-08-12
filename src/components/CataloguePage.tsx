@@ -302,14 +302,14 @@ Merci !`;
                 <Award className="w-10 h-10 text-white" />
               </div>
               <h3 className="text-xl font-semibold mb-2 text-gray-800">Base de données</h3>
-              <p className="text-gray-600">MySQL + Redis</p>
+              <p className="text-gray-600">PostgreSQL + PostGIS</p>
             </div>
             <div className="text-center">
               <div className="w-20 h-20 bg-gradient-to-r from-orange-500 to-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Heart className="w-10 h-10 text-white" />
               </div>
               <h3 className="text-xl font-semibold mb-2 text-gray-800">Déploiement</h3>
-              <p className="text-gray-600">Vercel + VPS</p>
+              <p className="text-gray-600">VPS + Docker</p>
             </div>
           </div>
         </div>

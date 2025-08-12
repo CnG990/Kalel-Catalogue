@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  # Frontend React
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+  # Base de données PostgreSQL + PostGIS
+  postgres:
+    image: postgis/postgis:15-3.3
+    environment:
+      POSTGRES_DB: kalel_sa_match
+      POSTGRES_USER: kalel_user
+      POSTGRES_PASSWORD: kalel_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  # Redis pour le cache
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:

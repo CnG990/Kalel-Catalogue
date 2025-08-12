@@ -74,3 +74,6 @@ foreach ($file in $filesToUpload) {
 
 Write-Host "✅ Upload terminé!" -ForegroundColor Green
 Write-Host "🌐 Repository: https://github.com/CnG990/Kalel-Catalogue" -ForegroundColor Cyan
+
+
+

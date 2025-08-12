@@ -14,3 +14,6 @@ try {
     Write-Host "Git non disponible" -ForegroundColor Red
     Write-Host "Installer Git: https://git-scm.com/downloads" -ForegroundColor Yellow
 }
+
+
+
