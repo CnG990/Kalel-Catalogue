@@ -14,8 +14,10 @@ import {
   Zap,
   Globe,
   Award,
-  Download
+  Download,
+  FileText
 } from 'lucide-react';
+import { PDFService } from '../services/pdfService';
 
 const CataloguePage: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -76,19 +78,49 @@ Envoyé depuis le catalogue en ligne`;
     });
   };
 
-  const handleDownloadCatalogue = () => {
-    const message = `Bonjour, je souhaite télécharger le catalogue complet de Kalel Sa Match.
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
 
-Pouvez-vous me l'envoyer par email ou WhatsApp ?
-
-Merci d'avance !`;
-    
-    const encodedMessage = encodeURIComponent(message);
-    window.open(`https://wa.me/221785949274?text=${encodedMessage}`, '_blank');
-    
-    const emailSubject = encodeURIComponent('Demande de catalogue - Kalel Sa Match');
-    const emailBody = encodeURIComponent(message);
-    window.open(`mailto:cheikhngom99@gmail.com?subject=${emailSubject}&body=${emailBody}`, '_blank');
+  const handleDownloadCatalogue = async () => {
+    try {
+      setIsGeneratingPDF(true);
+      await PDFService.generateCataloguePDF();
+      
+      // Notification de succès
+      const successMessage = document.createElement('div');
+      successMessage.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center space-x-2';
+      successMessage.innerHTML = `
+        <CheckCircle className="w-5 h-5" />
+        <span>Catalogue PDF généré avec succès !</span>
+      `;
+      document.body.appendChild(successMessage);
+      
+      // Supprimer la notification après 3 secondes
+      setTimeout(() => {
+        if (successMessage.parentNode) {
+          successMessage.parentNode.removeChild(successMessage);
+        }
+      }, 3000);
+      
+    } catch (error) {
+      console.error('Erreur lors de la génération du PDF:', error);
+      
+      // Notification d'erreur
+      const errorMessage = document.createElement('div');
+      errorMessage.className = 'fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center space-x-2';
+      errorMessage.innerHTML = `
+        <span>❌ Erreur lors de la génération du PDF</span>
+      `;
+      document.body.appendChild(errorMessage);
+      
+      // Supprimer la notification après 3 secondes
+      setTimeout(() => {
+        if (errorMessage.parentNode) {
+          errorMessage.parentNode.removeChild(errorMessage);
+        }
+      }, 3000);
+    } finally {
+      setIsGeneratingPDF(false);
+    }
   };
 
   const handleContactUs = () => {
@@ -135,10 +167,21 @@ Merci !`;
               <span>Voir la démo</span>
             </button>
             <button 
-              onClick={() => document.getElementById('catalogue-section')?.scrollIntoView({ behavior: 'smooth' })}
-              className="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold hover:bg-white hover:text-orange-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+              onClick={handleDownloadCatalogue}
+              disabled={isGeneratingPDF}
+              className="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold hover:bg-white hover:text-orange-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
             >
-              Télécharger le catalogue
+              {isGeneratingPDF ? (
+                <>
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                  <span>Génération...</span>
+                </>
+              ) : (
+                <>
+                  <FileText className="w-5 h-5" />
+                  <span>Télécharger le catalogue</span>
+                </>
+              )}
             </button>
           </div>
         </div>
@@ -332,19 +375,33 @@ Merci !`;
                 </li>
                 <li className="flex items-center space-x-2">
                   <CheckCircle className="w-5 h-5 text-green-500" />
-                  <span className="text-gray-600">Tarifs et plans</span>
+                  <span className="text-gray-600">Plans tarifaires</span>
                 </li>
                 <li className="flex items-center space-x-2">
                   <CheckCircle className="w-5 h-5 text-green-500" />
-                  <span className="text-gray-600">Témoignages clients</span>
+                  <span className="text-gray-600">Informations de contact</span>
+                </li>
+                <li className="flex items-center space-x-2">
+                  <CheckCircle className="w-5 h-5 text-green-500" />
+                  <span className="text-gray-600">Format PDF professionnel</span>
                 </li>
               </ul>
               <button 
                 onClick={handleDownloadCatalogue}
-                className="w-full bg-gradient-to-r from-orange-500 to-green-600 text-white py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-green-700 transition-all flex items-center justify-center space-x-2"
+                disabled={isGeneratingPDF}
+                className="w-full bg-gradient-to-r from-orange-500 to-green-600 text-white py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-green-700 transition-all flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <span>Télécharger le catalogue</span>
-                <ArrowRight className="w-5 h-5" />
+                {isGeneratingPDF ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                    <span>Génération du PDF...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Télécharger le catalogue</span>
+                    <ArrowRight className="w-5 h-5" />
+                  </>
+                )}
               </button>
             </div>
             <div>
